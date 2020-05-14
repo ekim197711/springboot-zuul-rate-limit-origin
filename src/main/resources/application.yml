@@ -1,0 +1,34 @@
+zuul:
+  routes:
+    serviceWeather:
+      path: /weather
+      url: forward:/
+    serviceSpaceship:
+      path: /spaceship
+      url: forward:/
+  ratelimit:
+    behind-proxy: true
+    response-headers: standard
+    enabled: true
+    repository: REDIS
+    default-policy-list: #optional - will apply unless specific policy exists
+      - limit: 20 #optional - request number limit per refresh interval window
+#        quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+        refresh-interval: 60 #default value (in seconds)
+        type: #optional
+          - origin
+    policy-list:
+      serviceWeather:
+        - limit: 2 #optional - request number limit per refresh interval window
+#          quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+          refresh-interval: 60 #default value (in seconds)
+          type:
+            - origin
+      serviceSpaceship:
+        - limit: 4 #optional - request number limit per refresh interval window
+#          quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+          refresh-interval: 60 #default value (in seconds)
+          type:
+            - origin
+
+  strip-prefix: false
